@@ -1,0 +1,2 @@
+http://winhelp2002.mvps.org/hosts.txt                                # This MVPS HOSTS file is a free download from:  http://winhelp2002.mvps.org/hosts.htm
+http://pgl.yoyo.org/as/serverlist.php?showintro=0;hostformat=hosts   # For more information about this list, see: http://pgl.yoyo.org/adservers/
