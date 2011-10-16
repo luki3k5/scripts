@@ -1,33 +1,26 @@
-#
-# This script allows you to customize your /etc/hosts file so it will 
-# prevent your browsers to reach out to ad servers. 
-#
-# This does not run any software just grabs the lists of know Advertisement servers 
-# and produces output file that your can then examine and add to your /etc/hosts.  
+require "rubygems"
+require "google_spreadsheet"
 
-# Here you can read what is the hosts file: http://en.wikipedia.org/wiki/Hosts_file
+# Getting the login information
+puts "google docs login:"  
+STDOUT.flush
+login = gets.chomp  
 
-require 'open-uri'
+# getting password information
+puts "google docs password:"
+STDOUT.flush  
+password = gets.chomp  
 
-input_file_name  = "lists.txt"
-output_file_name = "hosts.txt"
-lists, lists_urls = [], []
+# Logs in.
+session = GoogleSpreadsheet.login(login, password)
+# getting the first worksheet 
+ws = session.spreadsheet_by_key("0Anp_bn4ib4f7dEo5R1FSSWdCTFdLbGs4cnlETnFVNHc").worksheets[0]
 
-# Get the lists:
-File.open(input_file_name).each { |line| lists_urls << line.scan(/(.*)[#]/)  }
-
-lists_urls.each do |t|
-  
-  puts "#{t} - #{t.empty?}"
-end
-
-
-# for each list we get uri
-lists_urls.each do |list|
-  uri = URI.parse(list.to_s.strip)
-  # we connect to uri and grab content 
-  open(uri) do |content| 
-    # we append on the fly to output file cleaning incoming content from html tags 
-    File.open(output_file_name, 'a') {|f| f.write(content.read.gsub(/<\/?[^>]*>/, "").strip) } 
+(1..ws.num_rows).each do |row|
+  (1..ws.num_cols).each do |col|
+    puts ws[row, col]
   end
 end
+
+#puts ws.rows
+
