@@ -16,11 +16,23 @@ session = GoogleSpreadsheet.login(login, password)
 # getting the first worksheet 
 ws = session.spreadsheet_by_key("0Anp_bn4ib4f7dEo5R1FSSWdCTFdLbGs4cnlETnFVNHc").worksheets[0]
 
-(1..ws.num_rows).each do |row|
-  (1..ws.num_cols).each do |col|
-    puts ws[row, col]
-  end
+# -1 column because the first on would be keys
+no_of_languages = ws.num_cols-1
+
+languages = []
+(2..ws.num_cols).each do |c|
+  languages << ws[1,c]
 end
 
-#puts ws.rows
+puts languages.class 
+puts languages.inspect
+
+
+# (1..ws.num_rows).each do |row|
+#   (1..ws.num_cols).each do |col|
+#     puts ws[row, col]
+#   end
+# end
+
+# #puts ws.rows
 
