@@ -29,12 +29,11 @@ languages = {}
 end
 
 # Create flat HASH from Spreedsheet that will be processed 
-
 languages.keys.each do |lang| 
-  hash = {}
+  hash = Hash.new
   (2..ws.num_rows).each do |row|
     hash.store([lang, ws[row, 1].strip.rstrip].join('.'), ws[row, languages[lang]].strip.rstrip)
   end
   
-  File.open("#{lang}.yml", 'w+') {|f| f.write(Spreedsheet2yaml.create_yaml(hash)) }
+  File.open("#{lang}.yml", 'w') {|f| f.write(Spreedsheet2yaml.create_yaml(hash)) }
 end
