@@ -1,33 +1,45 @@
 require "rubygems"
 require "google_spreadsheet"
 require 'yaml'
+require 'spreedsheet2yaml'
+
+config = ""
+begin 
+  config = YAML.load_file("config.yml")
+rescue Exception => ex 
+  puts("config file missing!") 
+  exit 
+end
 
 # Getting the login information
-puts "google docs login:"  
-STDOUT.flush
-login = gets.chomp  
-
+login = config['google_user_id']
 # getting password information
-puts "google docs password:"
-STDOUT.flush  
-password = gets.chomp  
+password = config['google_password']
+# getting spreedsheet id
+spreedsheet_key = config['google_spreedsheet_to_process']
 
 # Logs in.
 session = GoogleSpreadsheet.login(login, password)
 # getting the first worksheet 
-ws = session.spreadsheet_by_key("0Anp_bn4ib4f7dEo5R1FSSWdCTFdLbGs4cnlETnFVNHc").worksheets[0]
+ws = session.spreadsheet_by_key(spreedsheet_key).worksheets[0]
 
 languages = {}
 (3..ws.num_cols).each do |c|
   languages["#{ws[1,c]}"] = c
 end
 
+# Create flat HASH from Spreedsheet that will be processed 
 languages.keys.each do |lang| 
-  # create a file: 
-  f = File.open("#{lang}.yml", 'w+')
-  # drop content to file from the keys and corresponding lang:
   (2..ws.num_rows).each do |row|
-    f.puts [ws[row, 1], ws[row, languages[lang]]].join(": ")
+    puts [[lang,ws[row, 1]].join('.'), ws[row, languages[lang]]].join(": ")
   end
-  f.close
+  
+  #   f = File.open("#{lang}.yml", 'w+') { Spreedsheet2yaml.create_yaml() }
 end
+
+
+#   # create a file: 
+#   f = File.open("#{lang}.yml", 'w+') { Spreedsheet2yaml.create_yaml() }
+#   # drop content to file from the keys and corresponding lang:
+#   f.close
+# end
